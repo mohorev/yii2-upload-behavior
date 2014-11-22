@@ -28,34 +28,98 @@ Usage
 ### Upload file
 
 ```php
-function behaviors()
+class Document extends ActiveRecord
 {
-    return [
-        [
-            'class' => UploadBehavior::className(),
-            'attribute' => 'file',
-            'scenarios' => ['insert', 'update'],
-            'path' => '@webroot/upload/{id}',
-            'url' => '@web/upload/{id}',
-        ],
-    ];
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            ['file', 'file', 'extensions' => 'doc, docx, pdf', 'on' => ['insert', 'update']],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    function behaviors()
+    {
+        return [
+            [
+                'class' => UploadBehavior::className(),
+                'attribute' => 'file',
+                'scenarios' => ['insert', 'update'],
+                'path' => '@webroot/upload/docs',
+                'url' => '@web/upload/docs',
+            ],
+        ];
+    }
 }
+```
+
+```php
+<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+    <?= $form->field($model, 'image')->fileInput() ?>
+    <div class="form-group">
+        <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
+    </div>
+<?php ActiveForm::end(); ?>
 ```
 
 ### Upload image and create thumbnails
 
 ```php
-function behaviors()
+class User extends ActiveRecord
 {
-    return [
-        [
-            'class' => UploadImageBehavior::className(),
-            'attribute' => 'file',
-            'scenarios' => ['insert', 'update'],
-            'placeholder' => '@app/modules/user/assets/images/userpic.jpg',
-            'path' => '@webroot/upload/{id}/images',
-            'url' => '@web/upload/{id}/images',
-        ],
-    ];
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            ['image', 'image', 'extensions' => 'jpg, jpeg, gif, png', 'on' => ['insert', 'update']],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'image' => [
+                'class' => UploadImageBehavior::className(),
+                'attribute' => 'image',
+                'scenarios' => ['insert', 'update'],
+                'placeholder' => '@app/modules/user/assets/images/userpic.jpg',
+                'path' => '@webroot/upload/user/{id}',
+                'url' => '@web/upload/user/{id}',
+                'thumbs' => [
+                    'thumb' => ['width' => 400, 'quality' => 90],
+                    'preview' => ['width' => 200, 'height' => 200],
+                ],
+            ],
+        ];
+    }
 }
+```
+
+```php
+<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-lg-5">
+                <?= Html::img($model->getThumbUploadUrl('image'), ['class' => 'img-thumbnail']) ?>
+            </div>
+            <div class="col-lg-2">
+                <?= Html::img($model->getThumbUploadUrl('image', 'preview'), ['class' => 'img-thumbnail']) ?>
+            </div>
+        </div>
+    </div>
+    <?= $form->field($model, 'image')->fileInput(['accept' => 'image/*']) ?>
+    <div class="form-group">
+        <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
+    </div>
+<?php ActiveForm::end(); ?>
 ```
