@@ -28,34 +28,34 @@ Usage
 ### Upload file
 
 ```php
-    function behaviors()
-    {
-        return [
-            [
-                'class' => UploadBehavior::className(),
-                'attribute' => 'file',
-                'scenarios' => ['insert', 'update'],
-                'path' => '@webroot/upload/{id}',
-                'url' => '@web/upload/{id}',
-            ],
-        ];
-    }
+function behaviors()
+{
+    return [
+        [
+            'class' => UploadBehavior::className(),
+            'attribute' => 'file',
+            'scenarios' => ['insert', 'update'],
+            'path' => '@webroot/upload/{id}',
+            'url' => '@web/upload/{id}',
+        ],
+    ];
+}
 ```
 
 ### Upload image and create thumbnails
 
 ```php
-    function behaviors()
-    {
-        return [
-            [
-                'class' => UploadBehavior::className(),
-                'attribute' => 'file',
-                'scenarios' => ['insert', 'update'],
-                'placeholder' => '@app/modules/user/assets/images/userpic.jpg',
-                'path' => '@webroot/upload/{id}/images',
-                'url' => '@web/upload/{id}/images',
-            ],
-        ];
-    }
+function behaviors()
+{
+    return [
+        [
+            'class' => UploadImageBehavior::className(),
+            'attribute' => 'file',
+            'scenarios' => ['insert', 'update'],
+            'placeholder' => '@app/modules/user/assets/images/userpic.jpg',
+            'path' => '@webroot/upload/{id}/images',
+            'url' => '@web/upload/{id}/images',
+        ],
+    ];
+}
 ```
