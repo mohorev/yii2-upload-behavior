@@ -75,7 +75,7 @@ class UploadBehavior extends Behavior
     /**
      * @var UploadedFile the uploaded file instance.
      */
-    protected $file;
+    private $_file;
 
 
     /**
@@ -119,10 +119,10 @@ class UploadBehavior extends Behavior
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
         if (in_array($model->scenario, $this->scenarios)) {
-            $this->file = UploadedFile::getInstance($model, $this->attribute);
-            if ($this->file instanceof UploadedFile) {
-                $this->file->name = $this->getFileName($this->file);
-                $model->setAttribute($this->attribute, $this->file);
+            $this->_file = UploadedFile::getInstance($model, $this->attribute);
+            if ($this->_file instanceof UploadedFile) {
+                $this->_file->name = $this->getFileName($this->_file);
+                $model->setAttribute($this->attribute, $this->_file);
             }
         }
     }
@@ -135,13 +135,13 @@ class UploadBehavior extends Behavior
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
         if (in_array($model->scenario, $this->scenarios)) {
-            if ($this->file instanceof UploadedFile) {
+            if ($this->_file instanceof UploadedFile) {
                 if (!$model->getIsNewRecord() && $model->isAttributeChanged($this->attribute)) {
                     if ($this->unlinkOnSave === true) {
                         $this->delete($this->attribute, true);
                     }
                 }
-                $model->setAttribute($this->attribute, $this->file->name);
+                $model->setAttribute($this->attribute, $this->_file->name);
             } else {
                 // Protect attribute
                 unset($model->{$this->attribute});
@@ -162,12 +162,12 @@ class UploadBehavior extends Behavior
      */
     public function afterSave()
     {
-        if ($this->file instanceof UploadedFile) {
+        if ($this->_file instanceof UploadedFile) {
             $path = $this->getUploadPath($this->attribute);
             if (!FileHelper::createDirectory(dirname($path))) {
                 throw new InvalidParamException("Directory specified in 'path' attribute doesn't exist or cannot be created.");
             }
-            $this->file->saveAs($path);
+            $this->_file->saveAs($path);
             $this->afterUpload();
         }
     }
