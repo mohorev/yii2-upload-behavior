@@ -19,7 +19,7 @@ use yii\imagine\Image;
  * {
  *     return [
  *         [
- *             'class' => UploadBehavior::className(),
+ *             'class' => UploadImageBehavior::className(),
  *             'attribute' => 'file',
  *             'scenarios' => ['insert', 'update'],
  *             'placeholder' => '@app/modules/user/assets/images/userpic.jpg',
