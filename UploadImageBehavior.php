@@ -1,6 +1,6 @@
 <?php
 
-namespace mongosoft\yii\behaviors;
+namespace mongosoft\behaviors;
 
 use Yii;
 use yii\base\InvalidConfigException;
