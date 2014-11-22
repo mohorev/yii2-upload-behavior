@@ -27,6 +27,8 @@ Usage
 
 ### Upload file
 
+Attach the behavior in your model:
+
 ```php
 class Document extends ActiveRecord
 {
@@ -58,6 +60,8 @@ class Document extends ActiveRecord
 }
 ```
 
+Example view file:
+
 ```php
 <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
     <?= $form->field($model, 'image')->fileInput() ?>
@@ -68,6 +72,8 @@ class Document extends ActiveRecord
 ```
 
 ### Upload image and create thumbnails
+
+Attach the behavior in your model:
 
 ```php
 class User extends ActiveRecord
@@ -104,6 +110,8 @@ class User extends ActiveRecord
     }
 }
 ```
+
+Example view file:
 
 ```php
 <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
