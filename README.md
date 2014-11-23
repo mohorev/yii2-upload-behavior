@@ -117,10 +117,16 @@ Example view file:
 <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
     <div class="form-group">
         <div class="row">
-            <div class="col-lg-5">
+            <div class="col-lg-6">
+                <!-- Original image -->
+                <?= Html::img($model->getUploadUrl('image'), ['class' => 'img-thumbnail']) ?>
+            </div>
+            <div class="col-lg-4">
+                <!-- Thumb 1 (thumb profile) -->
                 <?= Html::img($model->getThumbUploadUrl('image'), ['class' => 'img-thumbnail']) ?>
             </div>
             <div class="col-lg-2">
+                <!-- Thumb 2 (preview profile) -->
                 <?= Html::img($model->getThumbUploadUrl('image', 'preview'), ['class' => 'img-thumbnail']) ?>
             </div>
         </div>
