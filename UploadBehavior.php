@@ -212,7 +212,9 @@ class UploadBehavior extends Behavior
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
         $url = $this->resolvePath($this->url);
-        return $model->$attribute ? Yii::getAlias($url . '/' . $model->$attribute) : null;
+        $fileName = $model->getOldAttribute($attribute);
+
+        return $fileName ? Yii::getAlias($url . '/' . $fileName) : null;
     }
 
     /**

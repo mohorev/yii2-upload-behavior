@@ -151,22 +151,21 @@ class UploadImageBehavior extends UploadBehavior
     {
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
-        $path = $this->getUploadPath($this->attribute);
+        $path = $this->getUploadPath($this->attribute, true);
         if (is_file($path)) {
             if ($this->createThumbsOnRequest) {
                 $this->createThumbs();
             }
             $url = $this->resolvePath($this->thumbUrl);
-            $filename = $this->getThumbFileName($model->$attribute, $profile);
+            $fileName = $model->getOldAttribute($attribute);
+            $thumbName = $this->getThumbFileName($fileName, $profile);
 
-            $url = Yii::getAlias($url . '/' . $filename);
+            return Yii::getAlias($url . '/' . $thumbName);
         } elseif ($this->placeholder) {
             return $this->getPlaceholderUrl($profile);
         } else {
-            $url = null;
+            return null;
         }
-
-        return $url;
     }
 
     /**
