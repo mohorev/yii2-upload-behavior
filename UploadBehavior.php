@@ -1,6 +1,6 @@
 <?php
 
-namespace mongosoft\behaviors;
+namespace mongosoft\file;
 
 use Closure;
 use Yii;
