@@ -4,6 +4,10 @@
     "keywords": ["yii2", "behavior", "file", "image", "upload", "resize", "thumb"],
     "type": "yii2-extension",
     "license": "BSD 3-Clause",
+    "support": {
+        "issues": "https://github.com/mongosoft/yii2-upload-behavior/issues?state=open",
+        "source": "https://github.com/mongosoft/yii2-upload-behavior"
+    },
     "authors": [
         {
             "name": "Alexander Mohorev",
@@ -17,7 +21,7 @@
     },
     "autoload": {
         "psr-4": {
-            "mongosoft\\behaviors\\": ""
+            "mongosoft\\behaviors\\file\\": ""
         }
     }
 }
