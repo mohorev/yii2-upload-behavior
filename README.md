@@ -20,7 +20,7 @@ or add
 "mongosoft/yii2-upload-behavior": "*"
 ```
 
-to the `require` section of your composer.json.
+to the `require` section of your `composer.json` file.
 
 Usage
 -----
