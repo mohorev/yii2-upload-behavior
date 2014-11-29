@@ -18,6 +18,8 @@ use yii\web\UploadedFile;
  * To use UploadBehavior, insert the following code to your ActiveRecord class:
  *
  * ```php
+ * use mongosoft\file\UploadBehavior;
+ *
  * function behaviors()
  * {
  *     return [

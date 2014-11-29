@@ -14,7 +14,11 @@ use yii\imagine\Image;
  * UploadImageBehavior automatically uploads image, creates thumbnails and fills
  * the specified attribute with a value of the name of the uploaded image.
  *
+ * To use UploadImageBehavior, insert the following code to your ActiveRecord class:
+ *
  * ```php
+ * use mongosoft\file\UploadImageBehavior;
+ *
  * function behaviors()
  * {
  *     return [
