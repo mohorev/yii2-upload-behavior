@@ -51,6 +51,7 @@ class Document extends ActiveRecord
             [
                 'class' => UploadBehavior::className(),
                 'attribute' => 'file',
+                'instanceByName' => false,
                 'scenarios' => ['insert', 'update'],
                 'path' => '@webroot/upload/docs',
                 'url' => '@web/upload/docs',
