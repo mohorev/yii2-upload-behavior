@@ -60,6 +60,10 @@ class UploadBehavior extends Behavior
      */
     public $url;
     /**
+     * @var bool Getting file instance by name
+     */
+    public $instanceByName = false;
+    /**
      * @var boolean|callable generate a new unique name for the file
      * set true or anonymous function takes the old filename and returns a new name.
      * @see self::generateFileName()
@@ -121,7 +125,11 @@ class UploadBehavior extends Behavior
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
         if (in_array($model->scenario, $this->scenarios)) {
-            $this->_file = UploadedFile::getInstance($model, $this->attribute);
+            if ($this->instanceByName === true) {
+                $this->_file = UploadedFile::getInstanceByName($this->attribute);
+            } else {
+                $this->_file = UploadedFile::getInstance($model, $this->attribute);
+            }
             if ($this->_file instanceof UploadedFile) {
                 $this->_file->name = $this->getFileName($this->_file);
                 $model->setAttribute($this->attribute, $this->_file);

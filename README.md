@@ -137,3 +137,26 @@ Example view file:
     </div>
 <?php ActiveForm::end(); ?>
 ```
+
+### RESTfull
+
+If you use UploadBehavior in RESTfull application and you do not need a prefix of the model name, set the property `instanceByName = false`:
+
+```php
+/**
+ * @inheritdoc
+ */
+function behaviors()
+{
+    return [
+        [
+            'class' => UploadBehavior::className(),
+            'attribute' => 'file',
+            'instanceByName' => true,
+            'scenarios' => ['insert', 'update'],
+            'path' => '@webroot/upload/docs',
+            'url' => '@web/upload/docs',
+        ],
+    ];
+}
+```
