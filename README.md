@@ -3,6 +3,9 @@ Upload behavior for Yii 2
 
 This behavior automatically uploads file and fills the specified attribute with a value of the name of the uploaded file.
 
+[![Latest Stable Version](https://poser.pugx.org/mongosoft/yii2-upload-behavior/v/stable.png)](https://packagist.org/packages/mongosoft/yii2-upload-behavior)
+[![Total Downloads](https://poser.pugx.org/mongosoft/yii2-upload-behavior/downloads.png)](https://packagist.org/packages/mongosoft/yii2-upload-behavior)
+
 Installation
 ------------
 
