@@ -6,8 +6,8 @@
     "type": "yii2-extension",
     "license": "BSD 3-Clause",
     "support": {
-        "issues": "https://github.com/mongosoft/yii2-upload-behavior/issues?state=open",
-        "source": "https://github.com/mongosoft/yii2-upload-behavior"
+        "issues": "https://github.com/jaslin/yii2-upload-behavior/issues?state=open",
+        "source": "https://github.com/jaslin/yii2-upload-behavior"
     },
     "authors": [
         {
