@@ -236,7 +236,7 @@ class UploadBehavior extends Behavior
         $model = $this->owner;
         return preg_replace_callback('/{([^}]+)}/', function ($matches) use ($model) {
             $name = $matches[1];
-            $attribute = $model->getAttribute($name);
+            $attribute = ArrayHelper::getValue($model, $name);
             if (is_string($attribute) || is_numeric($attribute)) {
                 return $attribute;
             } else {
