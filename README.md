@@ -46,6 +46,14 @@ class Document extends ActiveRecord
     }
 
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategory()
+    {
+        return $this->hasOne(Category::className(), [ 'id' => 'id_category' ]);
+    }
+
+    /**
      * @inheritdoc
      */
     function behaviors()
@@ -55,8 +63,8 @@ class Document extends ActiveRecord
                 'class' => UploadBehavior::className(),
                 'attribute' => 'file',
                 'scenarios' => ['insert', 'update'],
-                'path' => '@webroot/upload/docs',
-                'url' => '@web/upload/docs',
+                'path' => '@webroot/upload/docs/{category.id}/',
+                'url' => '@web/upload/docs/{category.id}/',
             ],
         ];
     }
