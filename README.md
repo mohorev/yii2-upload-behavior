@@ -9,7 +9,7 @@ This behavior automatically uploads file and fills the specified attribute with 
 Installation
 ------------
 
-The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
+The preferred way to install this extension via [composer](http://getcomposer.org/download/).
 
 Either run
 
@@ -17,13 +17,11 @@ Either run
 php composer.phar require --prefer-dist mongosoft/yii2-upload-behavior "*"
 ```
 
-or add
+or add this code line to the `require` section of your `composer.json` file:
 
 ```json
 "mongosoft/yii2-upload-behavior": "*"
 ```
-
-to the `require` section of your `composer.json` file.
 
 Usage
 -----
@@ -149,25 +147,44 @@ Example view file:
 <?php ActiveForm::end(); ?>
 ```
 
-### RESTfull
+Behavior Options
+-------
 
-If you use UploadBehavior in RESTfull application and you do not need a prefix of the model name, set the property `instanceByName = false`:
+* attribute - The attribute which holds the attachment
+* scenarios - The scenarios in which the behavior will be triggered
+* instanceByName - Getting file instance by name, If you use UploadBehavior in `RESTfull` application and you do not need a prefix of the model name, set the property `instanceByName = false`, default value is `false`
+* path - the base path or path alias to the directory in which to save files.
+* url - the base URL or path alias for this file
+* generateNewName - Set true or anonymous function takes the old filename and returns a new name, default value is `true`
+* unlinkOnSave - If `true` current attribute file will be deleted, default value is `true`
+* unlinkOnDelete - If `true` current attribute file will be deleted after model deletion.
 
-```php
-/**
- * @inheritdoc
- */
-function behaviors()
+### Attention!
+
+It is prefered to use immutable placeholder in `url` and `path` options, other words try don't use related attributes that can be changed. There's bad practice. For example:
+
+```
+class Track extends ActiveRecord
 {
-    return [
-        [
-            'class' => UploadBehavior::className(),
-            'attribute' => 'file',
-            'instanceByName' => true,
-            'scenarios' => ['insert', 'update'],
-            'path' => '@webroot/upload/docs',
-            'url' => '@web/upload/docs',
-        ],
-    ];
+    public function getArtist()
+    {
+        return $this->hasOne(Artist::className(), [ 'id' => 'id_artist' ]);
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class'     => UploadBehavior::className(),
+                'attribute' => 'image',
+                'scenarios' => [ 'default' ],
+                'path'      => '@webroot/uploads/{artist.slug}/',
+                'url'       => '@web/uploads/{artist.slug}/',
+            ],
+        ];
+    }
 }
 ```
+
+If related model attribute `slug` will change, you must change folders' names too, otherwise behavior will works not correctly. 
+
