@@ -8,6 +8,7 @@ use yii\base\Behavior;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\db\BaseActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
 
