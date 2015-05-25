@@ -160,7 +160,6 @@ class UploadBehavior extends Behavior
             } else {
                 // Protect attribute
                 unset($model->{$this->attribute});
-                // $model->setAttribute($this->attribute, $model->getOldAttribute($this->attribute));
             }
         } else {
             if (!$model->getIsNewRecord() && $model->isAttributeChanged($this->attribute)) {
@@ -179,7 +178,7 @@ class UploadBehavior extends Behavior
     {
         if ($this->_file instanceof UploadedFile) {
             $path = $this->getUploadPath($this->attribute);
-            if (!FileHelper::createDirectory(dirname($path))) {
+            if ($path === null || !FileHelper::createDirectory(dirname($path))) {
                 throw new InvalidParamException("Directory specified in 'path' attribute doesn't exist or cannot be created.");
             }
             $this->save($this->_file, $path);
@@ -202,7 +201,7 @@ class UploadBehavior extends Behavior
      * Returns file path for the attribute.
      * @param string $attribute
      * @param boolean $old
-     * @return string the file path.
+     * @return string|null the file path.
      */
     public function getUploadPath($attribute, $old = false)
     {
