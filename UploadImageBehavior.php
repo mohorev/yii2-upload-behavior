@@ -31,6 +31,10 @@ use yii\imagine\Image;
  *             'url' => '@web/upload/{id}/images',
  *             'thumbPath' => '@webroot/upload/{id}/images/thumb',
  *             'thumbUrl' => '@web/upload/{id}/images/thumb',
+ *             'thumbs' => [
+ *                   'thumb' => ['width' => 400, 'quality' => 90],
+ *                   'preview' => ['width' => 200, 'height' => 200],
+ *              ],
  *         ],
  *     ];
  * }
