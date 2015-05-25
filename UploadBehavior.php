@@ -178,11 +178,12 @@ class UploadBehavior extends Behavior
     {
         if ($this->_file instanceof UploadedFile) {
             $path = $this->getUploadPath($this->attribute);
-            if ($path === null || !FileHelper::createDirectory(dirname($path))) {
+            if (is_string($path) && FileHelper::createDirectory(dirname($path))) {
+                $this->save($this->_file, $path);
+                $this->afterUpload();
+            } else {
                 throw new InvalidParamException("Directory specified in 'path' attribute doesn't exist or cannot be created.");
             }
-            $this->save($this->_file, $path);
-            $this->afterUpload();
         }
     }
 
