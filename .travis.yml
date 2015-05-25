@@ -9,7 +9,7 @@ php:
 install:
   - composer self-update
   - composer global require "fxp/composer-asset-plugin:1.0.0"
-  - php
+  - composer install
 
 before_script:
   - travis_retry composer self-update
