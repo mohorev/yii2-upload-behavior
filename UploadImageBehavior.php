@@ -109,7 +109,7 @@ class UploadImageBehavior extends UploadBehavior
     protected function afterUpload()
     {
         parent::afterUpload();
-        if ($this->createThumbsOnSave == true) {
+        if ($this->createThumbsOnSave) {
             $this->createThumbs();
         }
     }
