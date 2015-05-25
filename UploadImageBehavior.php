@@ -95,7 +95,7 @@ class UploadImageBehavior extends UploadBehavior
                 $height = ArrayHelper::getValue($config, 'height');
                 if ($height < 1 && $width < 1) {
                     throw new InvalidConfigException(sprintf(
-                        'Length of either side of thumb cannot be 0 or negative, current size '.
+                        'Length of either side of thumb cannot be 0 or negative, current size ' .
                             'is %sx%s', $width, $height
                     ));
                 }
@@ -218,7 +218,7 @@ class UploadImageBehavior extends UploadBehavior
      */
     protected function getThumbFileName($filename, $profile = 'thumb')
     {
-        return $profile . '-'. $filename;
+        return $profile . '-' . $filename;
     }
 
     /**
