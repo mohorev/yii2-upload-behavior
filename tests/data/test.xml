@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <document id="1" title="Doc 1" file="file-1.jpg"/>
+    <document id="2" title="Doc 2" file="file-2.jpg"/>
+    <document id="3" title="Doc 3" file="file-3.jpg"/>
+    <user id="1" nickname="admin" image="image-1.jpg"/>
+    <user id="2" nickname="moderator" image="image-2.jpg"/>
+</dataset>

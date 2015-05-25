@@ -78,6 +78,10 @@ class UploadBehavior extends Behavior
      * @var boolean If `true` current attribute file will be deleted after model deletion.
      */
     public $unlinkOnDelete = true;
+    /**
+     * @var boolean $deleteTempFile whether to delete the temporary file after saving.
+     */
+    public $deleteTempFile = true;
 
     /**
      * @var UploadedFile the uploaded file instance.
@@ -178,7 +182,7 @@ class UploadBehavior extends Behavior
             if (!FileHelper::createDirectory(dirname($path))) {
                 throw new InvalidParamException("Directory specified in 'path' attribute doesn't exist or cannot be created.");
             }
-            $this->_file->saveAs($path);
+            $this->save($this->_file, $path);
             $this->afterUpload();
         }
     }
@@ -196,10 +200,8 @@ class UploadBehavior extends Behavior
 
     /**
      * Returns file path for the attribute.
-     *
      * @param string $attribute
      * @param boolean $old
-     *
      * @return string the file path.
      */
     public function getUploadPath($attribute, $old = false)
@@ -214,7 +216,6 @@ class UploadBehavior extends Behavior
 
     /**
      * Returns file url for the attribute.
-     *
      * @param string $attribute
      * @return string|null
      */
@@ -244,6 +245,17 @@ class UploadBehavior extends Behavior
                 return $matches[0];
             }
         }, $path);
+    }
+
+    /**
+     * Saves the uploaded file.
+     * @param UploadedFile $file the uploaded file instance
+     * @param string $path the file path used to save the uploaded file
+     * @return boolean true whether the file is saved successfully
+     */
+    protected function save($file, $path)
+    {
+        return $file->saveAs($path, $this->deleteTempFile);
     }
 
     /**
