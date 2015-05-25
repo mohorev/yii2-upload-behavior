@@ -13,19 +13,15 @@ class UploadBehaviorTest extends DatabaseTestCase
 {
     public function testFindDocuments()
     {
-        $data = [];
-        $posts = Document::find()->all();
-        foreach ($posts as $post) {
-            $data[] = $post->toArray();
-        }
+        $data = Document::find()->asArray()->all();
         $this->assertEquals(require(__DIR__ . '/data/test-find-documents.php'), $data);
     }
 
     public function testFindDocument()
     {
-        $post = Document::findOne(3);
-        $this->assertEquals('Doc 3', $post->title);
-        $this->assertEquals('file-3.jpg', $post->file);
+        $document = Document::findOne(3);
+        $this->assertEquals('Doc 3', $document->title);
+        $this->assertEquals('file-3.jpg', $document->file);
     }
 
     public function testGetFileInstance()

@@ -10,11 +10,7 @@ class UploadImageBehaviorTest extends DatabaseTestCase
 {
     public function testFindUsers()
     {
-        $data = [];
-        $users = User::find()->all();
-        foreach ($users as $user) {
-            $data[] = $user->toArray();
-        }
+        $data = User::find()->asArray()->all();
         $this->assertEquals(require(__DIR__ . '/data/test-find-users.php'), $data);
     }
 
