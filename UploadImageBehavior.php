@@ -45,6 +45,21 @@ use yii\imagine\Image;
 class UploadImageBehavior extends UploadBehavior
 {
     /**
+     * GD2 driver definition for Imagine implementation using the GD library.
+     */
+    const GD2 = 'gd2';
+
+    /**
+     * imagick driver definition.
+     */
+    const IMAGICK = 'imagick';
+
+    /**
+     * gmagick driver definition.
+     */
+    const GMAGICK = 'gmagick';
+
+    /**
      * @var string
      */
     public $placeholder;
@@ -74,6 +89,11 @@ class UploadImageBehavior extends UploadBehavior
      */
     public $thumbUrl;
 
+    /**
+     * yii\imagine\Image $driver
+     * @var string|array
+     */
+    public $imageDriver = [self::GMAGICK, self::IMAGICK, self::GD2];
 
     /**
      * @inheritdoc
@@ -233,6 +253,7 @@ class UploadImageBehavior extends UploadBehavior
         $quality = ArrayHelper::getValue($config, 'quality', 100);
 
         if (!$width || !$height) {
+            Image::$driver = $this->imageDriver;
             $image = Image::getImagine()->open($path);
             $ratio = $image->getSize()->getWidth() / $image->getSize()->getHeight();
             if ($width) {
