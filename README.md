@@ -108,7 +108,7 @@ class User extends ActiveRecord
     {
         return [
             [
-                'class' => UploadImageBehavior::className(),
+                'class' => \mongosoft\file\UploadImageBehavior::className(),
                 'attribute' => 'image',
                 'scenarios' => ['insert', 'update'],
                 'placeholder' => '@app/modules/user/assets/images/userpic.jpg',
