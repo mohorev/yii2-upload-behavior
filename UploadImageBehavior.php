@@ -2,6 +2,7 @@
 
 namespace mongosoft\file;
 
+use Imagine\Image\ManipulatorInterface;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
@@ -231,6 +232,7 @@ class UploadImageBehavior extends UploadBehavior
         $width = ArrayHelper::getValue($config, 'width');
         $height = ArrayHelper::getValue($config, 'height');
         $quality = ArrayHelper::getValue($config, 'quality', 100);
+        $mode = ArrayHelper::getValue($config, 'mode', ManipulatorInterface::THUMBNAIL_INSET);
 
         if (!$width || !$height) {
             $image = Image::getImagine()->open($path);
@@ -244,6 +246,6 @@ class UploadImageBehavior extends UploadBehavior
 
         // Fix error "PHP GD Allowed memory size exhausted".
         ini_set('memory_limit', '512M');
-        Image::thumbnail($path, $width, $height)->save($thumbPath, ['quality' => $quality]);
+        Image::thumbnail($path, $width, $height, $mode)->save($thumbPath, ['quality' => $quality]);
     }
 }
