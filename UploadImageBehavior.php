@@ -160,7 +160,7 @@ class UploadImageBehavior extends UploadBehavior
     {
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
-        $path = $this->getUploadPath($this->attribute, true);
+        $path = $this->getUploadPath($attribute, true);
         if (is_file($path)) {
             if ($this->createThumbsOnRequest) {
                 $this->createThumbs();
