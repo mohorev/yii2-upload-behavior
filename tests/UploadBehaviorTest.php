@@ -50,6 +50,21 @@ class UploadBehaviorTest extends DatabaseTestCase
         $this->assertEquals(sha1_file($path), sha1_file(__DIR__ . '/data/test-file.txt'));
     }
 
+    public function testSetInstanceManual()
+    {
+        $document = new Document([
+            'title' => 'Doc 4',
+        ]);
+        $document->file = UploadedFile::getInstanceByName('Document[file-other]');
+        $document->setScenario('insert');
+
+        $this->assertTrue($document->save());
+
+        $path = $document->getUploadPath('file');
+        $this->assertTrue(is_file($path));
+        $this->assertEquals(sha1_file($path), sha1_file(__DIR__ . '/data/test-file-other.txt'));
+    }
+
     /**
      * @inheritdoc
      */
@@ -63,6 +78,13 @@ class UploadBehaviorTest extends DatabaseTestCase
                 'type' => 'text/plain',
                 'size' => 12,
                 'tmp_name' => __DIR__ . '/data/test-file.txt',
+                'error' => 0,
+            ],
+            'Document[file-other]' => [
+                'name' => 'test-file-other.txt',
+                'type' => 'text/plain',
+                'size' => 12,
+                'tmp_name' => __DIR__ . '/data/test-file-other.txt',
                 'error' => 0,
             ],
         ];

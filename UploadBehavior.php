@@ -130,10 +130,14 @@ class UploadBehavior extends Behavior
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
         if (in_array($model->scenario, $this->scenarios)) {
-            if ($this->instanceByName === true) {
-                $this->_file = UploadedFile::getInstanceByName($this->attribute);
+            if (($file = $model->getAttribute($this->attribute)) instanceof UploadedFile) {
+                $this->_file = $file;
             } else {
-                $this->_file = UploadedFile::getInstance($model, $this->attribute);
+                if ($this->instanceByName === true) {
+                    $this->_file = UploadedFile::getInstanceByName($this->attribute);
+                } else {
+                    $this->_file = UploadedFile::getInstance($model, $this->attribute);
+                }
             }
             if ($this->_file instanceof UploadedFile) {
                 $this->_file->name = $this->getFileName($this->_file);
