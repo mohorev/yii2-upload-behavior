@@ -81,7 +81,7 @@ class Controller extends Controller
     public function actionCreate($id)
     {
         $model = $this->findModel($id);
-        $model->setScenarion('update'); // Note! Set upload behavior scenario.
+        $model->setScenario('update'); // Note! Set upload behavior scenario.
         
         ...
         ...
