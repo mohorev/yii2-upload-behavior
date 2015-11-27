@@ -73,6 +73,23 @@ class Document extends ActiveRecord
 }
 ```
 
+Set model scenario in controller action:
+
+```php
+class Controller extends Controller
+{
+    public function actionCreate($id)
+    {
+        $model = $this->findModel($id);
+        $model->setScenarion('update'); // Note! Set upload behavior scenario.
+        
+        ...
+        ...
+    }
+}
+
+```
+
 Example view file:
 
 ```php
@@ -167,7 +184,7 @@ Behavior Options
 
 It is prefered to use immutable placeholder in `url` and `path` options, other words try don't use related attributes that can be changed. There's bad practice. For example:
 
-```
+```php
 class Track extends ActiveRecord
 {
     public function getArtist()
