@@ -197,9 +197,8 @@ class UploadBehavior extends Behavior
      */
     public function beforeDelete()
     {
-        $attribute = $this->attribute;
-        if ($this->unlinkOnDelete && $attribute) {
-            $this->delete($attribute);
+        if ($this->unlinkOnDelete) {
+            $this->deleteFolder($this->path);
         }
     }
 
@@ -323,5 +322,18 @@ class UploadBehavior extends Behavior
     protected function afterUpload()
     {
         $this->owner->trigger(self::EVENT_AFTER_UPLOAD);
+    }
+
+    /**
+     * Deletes folder with uploaded files
+     *
+     * @param string path
+     */
+    public function deleteFolder($path)
+    {
+        $dir = Yii::getAlias($this->resolvePath($path));
+        if (is_dir($dir)) {
+            FileHelper::removeDirectory($dir);
+        }
     }
 }
