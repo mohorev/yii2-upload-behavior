@@ -119,7 +119,7 @@ class UploadBehavior extends Behavior
             BaseActiveRecord::EVENT_BEFORE_UPDATE => 'beforeSave',
             BaseActiveRecord::EVENT_AFTER_INSERT => 'afterSave',
             BaseActiveRecord::EVENT_AFTER_UPDATE => 'afterSave',
-            BaseActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
+            BaseActiveRecord::EVENT_AFTER_DELETE => 'afterDelete',
         ];
     }
 
@@ -193,9 +193,9 @@ class UploadBehavior extends Behavior
     }
 
     /**
-     * This method is invoked before deleting a record.
+     * This method is invoked after deleting a record.
      */
-    public function beforeDelete()
+    public function afterDelete()
     {
         $attribute = $this->attribute;
         if ($this->unlinkOnDelete && $attribute) {
