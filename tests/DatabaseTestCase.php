@@ -91,6 +91,8 @@ abstract class DatabaseTestCase extends \PHPUnit_Extensions_Database_TestCase
             }
         } catch (\Exception $e) {
             Yii::$app->clear('db');
+
+            throw $e;
         }
 
         UploadedFile::reset();
