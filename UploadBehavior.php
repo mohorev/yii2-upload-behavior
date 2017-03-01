@@ -235,6 +235,15 @@ class UploadBehavior extends Behavior
     }
 
     /**
+     * Returns the UploadedFile instance.
+     * @return UploadedFile
+     */
+    protected function getUploadedFile()
+    {
+        return $this->_file;
+    }
+
+    /**
      * Replaces all placeholders in path variable with corresponding values.
      */
     protected function resolvePath($path)
