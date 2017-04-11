@@ -234,6 +234,7 @@ class UploadImageBehavior extends UploadBehavior
         $height = ArrayHelper::getValue($config, 'height');
         $quality = ArrayHelper::getValue($config, 'quality', 100);
         $mode = ArrayHelper::getValue($config, 'mode', ManipulatorInterface::THUMBNAIL_INSET);
+        $bg_color = ArrayHelper::getValue($config, 'bg_color', 'FFF');
 
         if (!$width || !$height) {
             $image = Image::getImagine()->open($path);
@@ -247,6 +248,7 @@ class UploadImageBehavior extends UploadBehavior
 
         // Fix error "PHP GD Allowed memory size exhausted".
         ini_set('memory_limit', '512M');
+        Image::$thumbnailBackgroundColor = $bg_color;
         Image::thumbnail($path, $width, $height, $mode)->save($thumbPath, ['quality' => $quality]);
     }
 }
