@@ -26,10 +26,11 @@ use yii\web\UploadedFile;
  *     return [
  *         [
  *             'class' => UploadBehavior::className(),
- *             'attribute' => 'file',
+ *             'attribute' => 'file',//['file','file1','file2']
  *             'scenarios' => ['insert', 'update'],
  *             'path' => '@webroot/upload/{id}',
  *             'url' => '@web/upload/{id}',
+ *             'nullValue' => '',
  *         ],
  *     ];
  * }
@@ -86,9 +87,15 @@ class UploadBehavior extends Behavior
 
     /**
      * @var UploadedFile the uploaded file instance.
+     * private modified to protected ,The class can override access
+     * _file modified to files
      */
-    private $_file;
+    protected $files = [];
 
+    /**
+     * When the value of null
+     */
+    public $nullValue = null;
 
     /**
      * @inheritdoc
@@ -105,6 +112,9 @@ class UploadBehavior extends Behavior
         }
         if ($this->url === null) {
             throw new InvalidConfigException('The "url" property must be set.');
+        }
+        if(!is_array($this->attribute)){
+            $this->attribute = [$this->attribute];
         }
     }
 
@@ -131,18 +141,24 @@ class UploadBehavior extends Behavior
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
         if (in_array($model->scenario, $this->scenarios)) {
-            if (($file = $model->getAttribute($this->attribute)) instanceof UploadedFile) {
-                $this->_file = $file;
-            } else {
-                if ($this->instanceByName === true) {
-                    $this->_file = UploadedFile::getInstanceByName($this->attribute);
-                } else {
-                    $this->_file = UploadedFile::getInstance($model, $this->attribute);
+            foreach ($this->attribute as $attr) {
+                if (!($file = $model->getAttribute($attr)) instanceof UploadedFile) {
+                    if ($this->instanceByName === true) {
+                        $file = UploadedFile::getInstanceByName($attr);
+                    } else {
+                        $file = UploadedFile::getInstance($model,$attr);
+                    }
                 }
-            }
-            if ($this->_file instanceof UploadedFile) {
-                $this->_file->name = $this->getFileName($this->_file);
-                $model->setAttribute($this->attribute, $this->_file);
+                if($file instanceof UploadedFile && !isset($this->files[$attr])){
+                    $file->name = $this->getFileName($file);
+                    $model->setAttribute($attr, $file);
+                    $this->files[$attr] = $file;
+                }
+                else{
+                    if($model->getAttribute($attr) == null){
+                        $model->setAttribute($attr, $this->nullValue);
+                    }
+                }
             }
         }
     }
@@ -155,21 +171,25 @@ class UploadBehavior extends Behavior
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
         if (in_array($model->scenario, $this->scenarios)) {
-            if ($this->_file instanceof UploadedFile) {
-                if (!$model->getIsNewRecord() && $model->isAttributeChanged($this->attribute)) {
-                    if ($this->unlinkOnSave === true) {
-                        $this->delete($this->attribute, true);
+            foreach ($this->attribute as $attr) {
+                if(isset($this->files[$attr]) && $this->files[$attr] instanceof UploadedFile){
+                    if (!$model->getIsNewRecord() && $model->isAttributeChanged($attr)) {
+                        if ($this->unlinkOnSave === true) {
+                            $this->delete($attr, true);
+                        }
                     }
+                    $model->setAttribute($attr, $this->files[$attr]->name);
                 }
-                $model->setAttribute($this->attribute, $this->_file->name);
-            } else {
-                // Protect attribute
-                unset($model->{$this->attribute});
+                else{
+                    unset($model->$attr);
+                }
             }
         } else {
-            if (!$model->getIsNewRecord() && $model->isAttributeChanged($this->attribute)) {
-                if ($this->unlinkOnSave === true) {
-                    $this->delete($this->attribute, true);
+            if(!$model->getIsNewRecord() && $this->unlinkOnSave){
+                foreach ($this->attribute as $attr) {
+                    if($model->isAttributeChanged($attr)){
+                        $this->delete($attr, true);
+                    }
                 }
             }
         }
@@ -181,13 +201,15 @@ class UploadBehavior extends Behavior
      */
     public function afterSave()
     {
-        if ($this->_file instanceof UploadedFile) {
-            $path = $this->getUploadPath($this->attribute);
-            if (is_string($path) && FileHelper::createDirectory(dirname($path))) {
-                $this->save($this->_file, $path);
-                $this->afterUpload();
-            } else {
-                throw new InvalidParamException("Directory specified in 'path' attribute doesn't exist or cannot be created.");
+        if($this->files){
+            foreach ($this->files as $attr => $file) {
+                $path = $this->getUploadPath($attr);
+                if (is_string($path) && FileHelper::createDirectory(dirname($path))) {
+                    $this->save($file, $path);
+                    $this->afterUpload();
+                } else {
+                    throw new InvalidParamException("Directory specified in 'path' attribute doesn't exist or cannot be created.");
+                }
             }
         }
     }
@@ -197,9 +219,10 @@ class UploadBehavior extends Behavior
      */
     public function afterDelete()
     {
-        $attribute = $this->attribute;
-        if ($this->unlinkOnDelete && $attribute) {
-            $this->delete($attribute);
+        if ($this->unlinkOnDelet) {
+            foreach ($this->attribute as $attr) {
+                $this->delete($attr);
+            }
         }
     }
 
