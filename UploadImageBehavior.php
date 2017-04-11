@@ -117,6 +117,18 @@ class UploadImageBehavior extends UploadBehavior
     }
 
     /**
+     * @inheritdoc
+     */
+    public function beforeDelete()
+    {
+        parent::beforeDelete();
+
+        if ($this->unlinkOnDelete && $this->thumbPath !== null) {
+            $this->deleteFolder($this->thumbPath);
+        }
+    }
+
+    /**
      * @throws \yii\base\InvalidParamException
      */
     protected function createThumbs()
