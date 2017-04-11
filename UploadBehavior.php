@@ -87,7 +87,7 @@ class UploadBehavior extends Behavior
     /**
      * @var UploadedFile the uploaded file instance.
      */
-    private $_file;
+    public $_file;
 
 
     /**
