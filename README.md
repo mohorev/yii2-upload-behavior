@@ -135,7 +135,7 @@ class User extends ActiveRecord
                 'thumbs' => [
                     'thumb' => ['width' => 400, 'quality' => 90],
                     'preview' => ['width' => 200, 'height' => 200],
-                    'news_thumb' => ['width' => 200, 'height' => 200, 'thumb_bg' => '000'],
+                    'news_thumb' => ['width' => 200, 'height' => 200, 'bg_color' => '000'],
                 ],
             ],
         ];
