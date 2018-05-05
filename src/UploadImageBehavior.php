@@ -6,6 +6,7 @@ use Imagine\Image\ManipulatorInterface;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\base\NotSupportedException;
 use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
@@ -82,6 +83,10 @@ class UploadImageBehavior extends UploadBehavior
      */
     public function init()
     {
+        if (!class_exists(Image::class)) {
+            throw new NotSupportedException("Yii2-imagine extension is required to use the UploadImageBehavior");
+        }
+
         parent::init();
 
         if ($this->createThumbsOnSave) {
@@ -230,8 +235,6 @@ class UploadImageBehavior extends UploadBehavior
      */
     protected function generateImageThumb($config, $path, $thumbPath)
     {
-        if (!class_exists(\yii\imagine\Image::class)) throw new \Exception("Thumbnails processing requires yiisoft/yii2-imagine to be installed");
-
         $width = ArrayHelper::getValue($config, 'width');
         $height = ArrayHelper::getValue($config, 'height');
         $quality = ArrayHelper::getValue($config, 'quality', 100);

@@ -29,8 +29,6 @@ class UploadImageBehaviorTest extends DatabaseTestCase
 
     public function testCreateUser()
     {
-        if (!$this->isImagineInstalled()) $this->markTestSkipped('No yii2-imagine installed');
-
         $user = new User([
             'nickname' => 'Alex',
         ]);
@@ -43,15 +41,8 @@ class UploadImageBehaviorTest extends DatabaseTestCase
         $this->assertEquals(sha1_file($path), sha1_file(__DIR__ . '/data/test-image.jpg'));
     }
 
-    protected function isImagineInstalled()
-    {
-        return class_exists(\yii\imagine\Image::class);
-    }
-
     public function testResizeUser()
     {
-        if (!$this->isImagineInstalled()) $this->markTestSkipped('No yii2-imagine installed');
-
         $user = User::findOne(1);
         $user->setScenario('update');
 

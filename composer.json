@@ -4,7 +4,7 @@
     "keywords": ["yii2", "extension", "behavior", "file", "image", "upload", "resize", "thumb"],
     "homepage": "https://github.com/mongosoft/yii2-upload-behavior",
     "type": "yii2-extension",
-    "license": "BSD 3-Clause",
+    "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/mongosoft/yii2-upload-behavior/issues?state=open",
         "source": "https://github.com/mongosoft/yii2-upload-behavior"
@@ -15,20 +15,27 @@
             "email": "dev.mohorev@gmail.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
     "require": {
         "php": ">=5.4.0",
         "yiisoft/yii2": "~2.0.0"
     },
     "require-dev": {
       "phpunit/phpunit": "~4.0",
-      "phpunit/dbunit": "~1.0"
+      "phpunit/dbunit": "~1.0",
+      "yiisoft/yii2-imagine": "^2.1"
     },
     "suggest": {
-        "yiisoft/yii2-imagine": "For automatic thumbnails processing with UploadImageBehavior"
+        "yiisoft/yii2-imagine": "Required to use thumbnails processing with UploadImageBehavior"
     },
     "autoload": {
         "psr-4": {
-            "mongosoft\\file\\": ""
+            "mongosoft\\file\\": "src"
         }
     }
 }
