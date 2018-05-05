@@ -4,8 +4,8 @@ namespace mohorev\file;
 
 use Imagine\Image\ManipulatorInterface;
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
@@ -25,7 +25,7 @@ use yii\imagine\Image;
  * {
  *     return [
  *         [
- *             'class' => UploadImageBehavior::className(),
+ *             'class' => UploadImageBehavior::class,
  *             'attribute' => 'file',
  *             'scenarios' => ['insert', 'update'],
  *             'placeholder' => '@app/modules/user/assets/images/userpic.jpg',
@@ -122,7 +122,7 @@ class UploadImageBehavior extends UploadBehavior
     }
 
     /**
-     * @throws \yii\base\InvalidParamException
+     * @throws \yii\base\InvalidArgumentException
      */
     protected function createThumbs()
     {
@@ -131,7 +131,9 @@ class UploadImageBehavior extends UploadBehavior
             $thumbPath = $this->getThumbUploadPath($this->attribute, $profile);
             if ($thumbPath !== null) {
                 if (!FileHelper::createDirectory(dirname($thumbPath))) {
-                    throw new InvalidParamException("Directory specified in 'thumbPath' attribute doesn't exist or cannot be created.");
+                    throw new InvalidArgumentException(
+                        "Directory specified in 'thumbPath' attribute doesn't exist or cannot be created."
+                    );
                 }
                 if (!is_file($thumbPath)) {
                     $this->generateImageThumb($config, $path, $thumbPath);

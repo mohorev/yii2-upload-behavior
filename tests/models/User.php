@@ -35,7 +35,7 @@ class User extends ActiveRecord
     {
         return [
             [
-                'class' => UploadImageBehavior::className(),
+                'class' => UploadImageBehavior::class,
                 'attribute' => 'image',
                 'scenarios' => ['insert', 'update'],
                 'path' => '@webroot/upload/user/{id}',

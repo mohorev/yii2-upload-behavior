@@ -5,8 +5,8 @@ namespace mohorev\file;
 use Closure;
 use Yii;
 use yii\base\Behavior;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
@@ -25,7 +25,7 @@ use yii\web\UploadedFile;
  * {
  *     return [
  *         [
- *             'class' => UploadBehavior::className(),
+ *             'class' => UploadBehavior::class,
  *             'attribute' => 'file',
  *             'scenarios' => ['insert', 'update'],
  *             'path' => '@webroot/upload/{id}',
@@ -177,7 +177,7 @@ class UploadBehavior extends Behavior
 
     /**
      * This method is called at the end of inserting or updating a record.
-     * @throws \yii\base\InvalidParamException
+     * @throws \yii\base\InvalidArgumentException
      */
     public function afterSave()
     {
@@ -187,7 +187,9 @@ class UploadBehavior extends Behavior
                 $this->save($this->_file, $path);
                 $this->afterUpload();
             } else {
-                throw new InvalidParamException("Directory specified in 'path' attribute doesn't exist or cannot be created.");
+                throw new InvalidArgumentException(
+                    "Directory specified in 'path' attribute doesn't exist or cannot be created."
+                );
             }
         }
     }

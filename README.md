@@ -53,7 +53,7 @@ class Document extends ActiveRecord
      */
     public function getCategory()
     {
-        return $this->hasOne(Category::className(), [ 'id' => 'id_category' ]);
+        return $this->hasOne(Category::class, [ 'id' => 'id_category' ]);
     }
 
     /**
@@ -63,7 +63,7 @@ class Document extends ActiveRecord
     {
         return [
             [
-                'class' => UploadBehavior::className(),
+                'class' => UploadBehavior::class,
                 'attribute' => 'file',
                 'scenarios' => ['insert', 'update'],
                 'path' => '@webroot/upload/docs/{category.id}',
@@ -128,7 +128,7 @@ class User extends ActiveRecord
     {
         return [
             [
-                'class' => \mohorev\file\UploadImageBehavior::className(),
+                'class' => \mohorev\file\UploadImageBehavior::class,
                 'attribute' => 'image',
                 'scenarios' => ['insert', 'update'],
                 'placeholder' => '@app/modules/user/assets/images/userpic.jpg',
@@ -193,14 +193,14 @@ class Track extends ActiveRecord
 {
     public function getArtist()
     {
-        return $this->hasOne(Artist::className(), [ 'id' => 'id_artist' ]);
+        return $this->hasOne(Artist::class, [ 'id' => 'id_artist' ]);
     }
 
     public function behaviors()
     {
         return [
             [
-                'class' => UploadBehavior::className(),
+                'class' => UploadBehavior::class,
                 'attribute' => 'image',
                 'scenarios' => ['default'],
                 'path' => '@webroot/uploads/{artist.slug}',

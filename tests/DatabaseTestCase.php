@@ -77,7 +77,7 @@ abstract class DatabaseTestCase extends \PHPUnit_Extensions_Database_TestCase
     {
         try {
             Yii::$app->set('db', [
-                'class' => Connection::className(),
+                'class' => Connection::class,
                 'dsn' => 'sqlite::memory:',
             ]);
 
