@@ -183,6 +183,7 @@ Behavior Options
 * generateNewName - Set true or anonymous function takes the old filename and returns a new name, default value is `true`
 * unlinkOnSave - If `true` current attribute file will be deleted, default value is `true`
 * unlinkOnDelete - If `true` current attribute file will be deleted after model deletion.
+* deleteEmptyDir - If `true` the **empty** directory will be deleted after model deletion, default value is `false`.
 
 ### Attention!
 

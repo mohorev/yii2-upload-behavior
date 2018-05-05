@@ -17,3 +17,11 @@ CREATE TABLE "user" (
   "nickname" TEXT    NOT NULL,
   "image"    TEXT    NOT NULL
 );
+
+DROP TABLE IF EXISTS "file";
+
+CREATE TABLE "file" (
+  "id"       INTEGER NOT NULL PRIMARY KEY,
+  "year"     TEXT    NOT NULL,
+  "file"     TEXT    NOT NULL
+);
