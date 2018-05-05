@@ -104,6 +104,8 @@ Example view file:
 
 ### Upload image and create thumbnails
 
+Thumbnails processing requires [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine) to be installed.
+
 Attach the behavior in your model:
 
 ```php

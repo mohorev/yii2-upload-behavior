@@ -230,6 +230,8 @@ class UploadImageBehavior extends UploadBehavior
      */
     protected function generateImageThumb($config, $path, $thumbPath)
     {
+        if (!class_exists(\yii\imagine\Image::class)) throw new \Exception("Thumbnails processing requires yiisoft/yii2-imagine to be installed");
+
         $width = ArrayHelper::getValue($config, 'width');
         $height = ArrayHelper::getValue($config, 'height');
         $quality = ArrayHelper::getValue($config, 'quality', 100);
