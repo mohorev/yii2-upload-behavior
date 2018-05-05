@@ -1,13 +1,13 @@
 {
-    "name": "mongosoft/yii2-upload-behavior",
+    "name": "mohorev/yii2-upload-behavior",
     "description": "Upload behavior for Yii 2",
     "keywords": ["yii2", "extension", "behavior", "file", "image", "upload", "resize", "thumb"],
-    "homepage": "https://github.com/mongosoft/yii2-upload-behavior",
+    "homepage": "https://github.com/mohorev/yii2-upload-behavior",
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "support": {
-        "issues": "https://github.com/mongosoft/yii2-upload-behavior/issues?state=open",
-        "source": "https://github.com/mongosoft/yii2-upload-behavior"
+        "issues": "https://github.com/mohorev/yii2-upload-behavior/issues?state=open",
+        "source": "https://github.com/mohorev/yii2-upload-behavior"
     },
     "authors": [
         {
@@ -35,7 +35,7 @@
     },
     "autoload": {
         "psr-4": {
-            "mongosoft\\file\\": "src"
+            "mohorev\\file\\": "src"
         }
     }
 }

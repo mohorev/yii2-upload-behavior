@@ -1,6 +1,6 @@
 <?php
 
-namespace mongosoft\file;
+namespace mohorev\file;
 
 use Closure;
 use Yii;
@@ -19,7 +19,7 @@ use yii\web\UploadedFile;
  * To use UploadBehavior, insert the following code to your ActiveRecord class:
  *
  * ```php
- * use mongosoft\file\UploadBehavior;
+ * use mohorev\file\UploadBehavior;
  *
  * function behaviors()
  * {

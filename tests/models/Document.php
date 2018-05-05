@@ -2,7 +2,7 @@
 
 namespace tests\models;
 
-use mongosoft\file\UploadBehavior;
+use mohorev\file\UploadBehavior;
 use yii\db\ActiveRecord;
 
 /**

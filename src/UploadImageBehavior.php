@@ -1,6 +1,6 @@
 <?php
 
-namespace mongosoft\file;
+namespace mohorev\file;
 
 use Imagine\Image\ManipulatorInterface;
 use Yii;
@@ -19,7 +19,7 @@ use yii\imagine\Image;
  * To use UploadImageBehavior, insert the following code to your ActiveRecord class:
  *
  * ```php
- * use mongosoft\file\UploadImageBehavior;
+ * use mohorev\file\UploadImageBehavior;
  *
  * function behaviors()
  * {
