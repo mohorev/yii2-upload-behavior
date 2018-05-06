@@ -83,6 +83,10 @@ class UploadBehavior extends Behavior
      * @var boolean $deleteTempFile whether to delete the temporary file after saving.
      */
     public $deleteTempFile = true;
+    /**
+     * @var boolean $deleteEmptyDir whether to delete the empty directory after model deletion.
+     */
+    public $deleteEmptyDir = false;
 
     /**
      * @var UploadedFile the uploaded file instance.
@@ -282,8 +286,17 @@ class UploadBehavior extends Behavior
     protected function delete($attribute, $old = false)
     {
         $path = $this->getUploadPath($attribute, $old);
+
         if (is_file($path)) {
             unlink($path);
+        }
+
+        if ($this->deleteEmptyDir) {
+            $dir = dirname($path);
+
+            if (is_dir($dir) && count(scandir($dir)) == 2) {
+                rmdir($dir);
+            }
         }
     }
 
