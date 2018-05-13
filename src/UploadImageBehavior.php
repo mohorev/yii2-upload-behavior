@@ -52,10 +52,12 @@ class UploadImageBehavior extends UploadBehavior
      */
     public $placeholder;
     /**
+     * create all thumbs profiles on image upload
      * @var boolean
      */
     public $createThumbsOnSave = true;
     /**
+     * create thumb only for profile request by getThumbUploadUrl() method
      * @var boolean
      */
     public $createThumbsOnRequest = false;
@@ -89,23 +91,21 @@ class UploadImageBehavior extends UploadBehavior
 
         parent::init();
 
-        if ($this->createThumbsOnSave) {
-            if ($this->thumbPath === null) {
-                $this->thumbPath = $this->path;
-            }
-            if ($this->thumbUrl === null) {
-                $this->thumbUrl = $this->url;
-            }
+        if ($this->thumbPath === null) {
+            $this->thumbPath = $this->path;
+        }
+        if ($this->thumbUrl === null) {
+            $this->thumbUrl = $this->url;
+        }
 
-            foreach ($this->thumbs as $config) {
-                $width = ArrayHelper::getValue($config, 'width');
-                $height = ArrayHelper::getValue($config, 'height');
-                if ($height < 1 && $width < 1) {
-                    throw new InvalidConfigException(sprintf(
-                        'Length of either side of thumb cannot be 0 or negative, current size ' .
-                            'is %sx%s', $width, $height
-                    ));
-                }
+        foreach ($this->thumbs as $config) {
+            $width = ArrayHelper::getValue($config, 'width');
+            $height = ArrayHelper::getValue($config, 'height');
+            if ($height < 1 && $width < 1) {
+                throw new InvalidConfigException(sprintf(
+                    'Length of either side of thumb cannot be 0 or negative, current size ' .
+                    'is %sx%s', $width, $height
+                ));
             }
         }
     }
@@ -122,12 +122,18 @@ class UploadImageBehavior extends UploadBehavior
     }
 
     /**
+     * @param string $needed_profile - profile name to create thumb
      * @throws \yii\base\InvalidArgumentException
      */
-    protected function createThumbs()
+    protected function createThumbs($needed_profile = false)
     {
         $path = $this->getUploadPath($this->attribute);
         foreach ($this->thumbs as $profile => $config) {
+            //skip profiles not needed now
+            if ($needed_profile && $needed_profile != $profile) {
+                continue;
+            }
+
             $thumbPath = $this->getThumbUploadPath($this->attribute, $profile);
             if ($thumbPath !== null) {
                 if (!FileHelper::createDirectory(dirname($thumbPath))) {
@@ -139,6 +145,7 @@ class UploadImageBehavior extends UploadBehavior
                     $this->generateImageThumb($config, $path, $thumbPath);
                 }
             }
+
         }
     }
 
@@ -171,7 +178,7 @@ class UploadImageBehavior extends UploadBehavior
         $path = $this->getUploadPath($attribute, true);
         if (is_file($path)) {
             if ($this->createThumbsOnRequest) {
-                $this->createThumbs();
+                $this->createThumbs($profile);
             }
             $url = $this->resolvePath($this->thumbUrl);
             $fileName = $model->getOldAttribute($attribute);

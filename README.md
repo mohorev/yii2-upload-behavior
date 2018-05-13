@@ -132,6 +132,10 @@ class User extends ActiveRecord
                 'placeholder' => '@app/modules/user/assets/images/userpic.jpg',
                 'path' => '@webroot/upload/user/{id}',
                 'url' => '@web/upload/user/{id}',
+                //if need create all thumbs profiles on image upload
+                'createThumbsOnSave' => true,
+                //if need create thumb for one profile only on request by getThumbUploadUrl() method
+                'createThumbsOnRequest' => true,
                 'thumbs' => [
                     'thumb' => ['width' => 400, 'quality' => 90],
                     'preview' => ['width' => 200, 'height' => 200],
@@ -181,6 +185,12 @@ Behavior Options
 * generateNewName - Set true or anonymous function takes the old filename and returns a new name, default value is `true`
 * unlinkOnSave - If `true` current attribute file will be deleted, default value is `true`
 * unlinkOnDelete - If `true` current attribute file will be deleted after model deletion.
+
+UploadImageBehavior additional Options
+-------
+
+* createThumbsOnSave - If `true` create all thumbs profiles on image upload
+* createThumbsOnRequest - If `true` create thumb only for profile request by `getThumbUploadUrl('attribute', 'profile_name)` method. If `true` recommend to set `createThumbsOnSave` to `false`
 
 ### Attention!
 
