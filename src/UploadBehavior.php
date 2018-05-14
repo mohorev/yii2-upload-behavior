@@ -85,6 +85,11 @@ class UploadBehavior extends Behavior
     public $deleteTempFile = true;
 
     /**
+     * @var boolean whether to append a timestamp to the URL. Example: `/path/to/image.png?v=timestamp`
+     */
+    public $appendTimeStamp = false;
+
+    /**
      * @var UploadedFile the uploaded file instance.
      */
     private $_file;
@@ -232,8 +237,9 @@ class UploadBehavior extends Behavior
         $model = $this->owner;
         $url = $this->resolvePath($this->url);
         $fileName = $model->getOldAttribute($attribute);
+        $timestamp = $this->getTimestamp($attribute);
 
-        return $fileName ? Yii::getAlias($url . '/' . $fileName) : null;
+        return $fileName ? Yii::getAlias($url . '/' . $fileName) . $timestamp : null;
     }
 
     /**
@@ -334,5 +340,19 @@ class UploadBehavior extends Behavior
     protected function afterUpload()
     {
         $this->owner->trigger(self::EVENT_AFTER_UPLOAD);
+    }
+
+    /**
+     * Returns the timestamp of file by given attribute
+     * @param $attribute
+     * @return string|null
+     */
+    protected function getTimestamp($attribute) {
+        if(!$this->appendTimeStamp) {
+            return null;
+        }
+        $file = $this->getUploadPath($attribute);
+        $timestamp = @filemtime($file);
+        return $timestamp > 0 ? "?v=$timestamp" : null;
     }
 }
