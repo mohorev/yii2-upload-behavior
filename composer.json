@@ -1,13 +1,13 @@
 {
-    "name": "mohorev/yii2-upload-behavior",
-    "description": "Upload behavior for Yii 2",
+    "name": "shurik2k5/yii2-upload-behavior",
+    "description": "Improved version Upload behavior for Yii 2 by mohorev/yii2-upload-behavior",
     "keywords": ["yii2", "extension", "behavior", "file", "image", "upload", "resize", "thumb"],
-    "homepage": "https://github.com/mohorev/yii2-upload-behavior",
+    "homepage": "https://github.com/shurik2k5/yii2-upload-behavior",
     "type": "yii2-extension",
     "license": "BSD-3-Clause",
     "support": {
-        "issues": "https://github.com/mohorev/yii2-upload-behavior/issues?state=open",
-        "source": "https://github.com/mohorev/yii2-upload-behavior"
+        "issues": "https://github.com/shurik2k5/yii2-upload-behavior/issues?state=open",
+        "source": "https://github.com/shurik2k5/yii2-upload-behavior"
     },
     "authors": [
         {

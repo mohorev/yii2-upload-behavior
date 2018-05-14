@@ -3,6 +3,7 @@
 namespace tests;
 
 use tests\models\Document;
+use tests\models\File;
 use Yii;
 use yii\web\UploadedFile;
 
@@ -65,6 +66,31 @@ class UploadBehaviorTest extends DatabaseTestCase
         $this->assertEquals(sha1_file($path), sha1_file(__DIR__ . '/data/test-file-other.txt'));
     }
 
+    public function testDeleteDocument()
+    {
+        $doc1 = new File(['year' => '2018']);
+        $doc1->setScenario('insert');
+        $doc1->save();
+
+        $doc2 = new File(['year' => '2018']);
+        $doc2->setScenario('insert');
+        $doc2->save();
+
+        # delete first file, directory should not be deleted
+        $doc1->delete();
+
+        $path1 = $doc1->getUploadPath('file');
+        $this->assertFalse(is_file($path1));
+        $this->assertTrue(is_dir(dirname($path1)));
+
+        # delete directory if last file deleted
+        $doc2->delete();
+
+        $path2 = $doc2->getUploadPath('file');
+        $this->assertFalse(is_file($path2));
+        $this->assertFalse(is_dir(dirname($path2)));
+    }
+
     /**
      * @inheritdoc
      */
@@ -85,6 +111,13 @@ class UploadBehaviorTest extends DatabaseTestCase
                 'type' => 'text/plain',
                 'size' => 12,
                 'tmp_name' => __DIR__ . '/data/test-file-other.txt',
+                'error' => 0,
+            ],
+            'File[file]' => [
+                'name' => 'test-file.txt',
+                'type' => 'text/plain',
+                'size' => 12,
+                'tmp_name' => __DIR__ . '/data/test-file.txt',
                 'error' => 0,
             ],
         ];

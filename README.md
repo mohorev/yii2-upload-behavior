@@ -1,13 +1,10 @@
 Upload behavior for Yii 2
 ===========================
 
+This repo is fork https://github.com/mohorev/yii2-upload-behavior/
+
 This behavior automatically uploads file and fills the specified attribute with a value of the name of the uploaded file.
 This code is inspired by, but not derived from, https://github.com/yii-dream-team/yii2-upload-behavior.
-
-[![Latest Version](https://img.shields.io/packagist/v/mohorev/yii2-upload-behavior.svg?style=flat-square)](https://packagist.org/packages/mohorev/yii2-upload-behavior)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/travis/mohorev/yii2-upload-behavior/master.svg?style=flat-square)](https://travis-ci.org/mohorev/yii2-upload-behavior)
-[![Quality Score](https://img.shields.io/scrutinizer/g/mohorev/yii2-upload-behavior.svg?style=flat-square)](https://scrutinizer-ci.com/g/mohorev/yii2-upload-behavior)
 
 Installation
 ------------
@@ -17,13 +14,13 @@ The preferred way to install this extension via [composer](http://getcomposer.or
 Either run
 
 ```
-php composer.phar require --prefer-dist mohorev/yii2-upload-behavior "*"
+php composer.phar require --prefer-dist shurik2k5/yii2-upload-behavior "*"
 ```
 
 or add this code line to the `require` section of your `composer.json` file:
 
 ```json
-"mohorev/yii2-upload-behavior": "*"
+"shurik2k5/yii2-upload-behavior": "*"
 ```
 
 Usage
@@ -185,6 +182,7 @@ Behavior Options
 * generateNewName - Set true or anonymous function takes the old filename and returns a new name, default value is `true`
 * unlinkOnSave - If `true` current attribute file will be deleted, default value is `true`
 * unlinkOnDelete - If `true` current attribute file will be deleted after model deletion.
+* deleteEmptyDir - If `true` the **empty** directory will be deleted after model deletion, default value is `false`.
 
 UploadImageBehavior additional Options
 -------
