@@ -54,11 +54,55 @@ class UploadBehavior extends Behavior
      */
     public $scenarios = [];
     /**
-     * @var string the base path or path alias to the directory in which to save files.
+     * @var string|callable|array Base path or path alias to the directory in which to save files,
+     * or callable for setting up your custom path generation logic.
+     * If $path is callable, callback signature should be as follow and return a string:
+     *
+     * ```php
+     * function (\yii\db\ActiveRecord $model)
+     * {
+     *     // do something...
+     *     return $string;
+     * }
+     * ```
+     * If this property is set up as array, it should be, for example, like as follow ['\app\models\UserProfile', 'buildAvatarPath'],
+     * where first element is class name, while second is its static method that should be called for path generation.
+     *
+     * Example:
+     * ```php
+     * public static function buildAvatarPath(\yii\db\ActiveRecord $model)
+     * {
+     *      $basePath = '@webroot/upload/avatars/';
+     *      $suffix = implode('/', array_slice(str_split(md5($model->id), 2), 0, 2));
+     *      return $basePath . $suffix;
+     * }
+     * ```
      */
     public $path;
     /**
-     * @var string the base URL or path alias for this file
+     * @var string|callable|array Base URL or path alias for this file,
+     * or callable for setting up your custom URL generation logic.
+     * If $url is callable, callback signature should be as follow and return a string:
+     *
+     * ```php
+     * function (\yii\db\ActiveRecord $model)
+     * {
+     *     // do something...
+     *     return $string;
+     * }
+     * ```
+     * If this property is set up as array, it should be, for example, like as follow ['\app\models\UserProfile', 'buildAvatarUrl'],
+     * where first element is class name, while second is its static method that should be called for URL generation.
+     *
+     * Example:
+     * ```php
+     * public static function buildAvatarUrl(\yii\db\ActiveRecord $model)
+     * {
+     *      $baseUrl = '@web/upload/avatars/';
+     *      $suffix = implode('/', array_slice(str_split(md5($model->id), 2), 0, 2));
+     *      return $baseUrl . $suffix;
+     * }
+     * ```
      */
     public $url;
     /**
@@ -177,7 +221,7 @@ class UploadBehavior extends Behavior
 
     /**
      * This method is called at the end of inserting or updating a record.
-     * @throws \yii\base\InvalidArgumentException
+     * @throws \yii\base\Exception
      */
     public function afterSave()
     {
@@ -210,6 +254,7 @@ class UploadBehavior extends Behavior
      * @param string $attribute
      * @param boolean $old
      * @return string|null the file path.
+     * @throws \yii\base\InvalidConfigException
      */
     public function getUploadPath($attribute, $old = false)
     {
@@ -225,6 +270,7 @@ class UploadBehavior extends Behavior
      * Returns file url for the attribute.
      * @param string $attribute
      * @return string|null
+     * @throws \yii\base\InvalidConfigException
      */
     public function getUploadUrl($attribute)
     {
@@ -252,15 +298,23 @@ class UploadBehavior extends Behavior
     {
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
-        return preg_replace_callback('/{([^}]+)}/', function ($matches) use ($model) {
-            $name = $matches[1];
-            $attribute = ArrayHelper::getValue($model, $name);
-            if (is_string($attribute) || is_numeric($attribute)) {
-                return $attribute;
-            } else {
-                return $matches[0];
-            }
-        }, $path);
+        if (is_string($path)) {
+            return preg_replace_callback('/{([^}]+)}/', function ($matches) use ($model) {
+                $name = $matches[1];
+                $attribute = ArrayHelper::getValue($model, $name);
+                if (is_string($attribute) || is_numeric($attribute)) {
+                    return $attribute;
+                } else {
+                    return $matches[0];
+                }
+            }, $path);
+        } elseif (is_callable($path) || is_array($path)) {
+            return call_user_func($path, $this->owner);
+        } else {
+            throw new InvalidConfigException(
+                '`path` property must be string or array or callable: ' . gettype($path) . ' given.'
+            );
+        }
     }
 
     /**
