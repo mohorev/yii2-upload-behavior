@@ -103,7 +103,7 @@ class UploadImageBehavior extends UploadBehavior
                 if ($height < 1 && $width < 1) {
                     throw new InvalidConfigException(sprintf(
                         'Length of either side of thumb cannot be 0 or negative, current size ' .
-                            'is %sx%s', $width, $height
+                        'is %sx%s', $width, $height
                     ));
                 }
             }
@@ -122,7 +122,8 @@ class UploadImageBehavior extends UploadBehavior
     }
 
     /**
-     * @throws \yii\base\InvalidArgumentException
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
      */
     protected function createThumbs()
     {
@@ -147,6 +148,7 @@ class UploadImageBehavior extends UploadBehavior
      * @param string $profile
      * @param boolean $old
      * @return string
+     * @throws \yii\base\InvalidConfigException
      */
     public function getThumbUploadPath($attribute, $profile = 'thumb', $old = false)
     {
@@ -163,6 +165,8 @@ class UploadImageBehavior extends UploadBehavior
      * @param string $attribute
      * @param string $profile
      * @return string|null
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
      */
     public function getThumbUploadUrl($attribute, $profile = 'thumb')
     {
