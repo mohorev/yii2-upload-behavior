@@ -143,7 +143,103 @@ class User extends ActiveRecord
 }
 ```
 
-Example view file:
+## Flexible configuration for path and URL generation 
+
+More flexible configuration for `path` and/or `url` behavior properties is that to use 
+callbacks or array for defining `path` or `url` generation logic.
+
+#### I. Via callbacks
+
+```php
+/**
+ * @inheritdoc
+ */
+public function behaviors()
+{
+    return [
+        [
+            'class' => \mohorev\file\UploadImageBehavior::class,
+            'attribute' => 'image',
+            'scenarios' => ['insert', 'update'],
+            'placeholder' => '@app/modules/user/assets/images/userpic.jpg',
+            'path' => function ($model) {
+                /** @var \app\models\UserProfile $model */
+                $basePath = '@webroot/upload/profiles/';
+                $path = implode('/', array_slice(str_split(md5($model->id), 2), 0, 2));
+                return $basePath . $path;
+            },
+            'url' => function ($model) {
+                /** @var \app\models\UserProfile $model */
+                $baseUrl = '@web/upload/profiles/';
+                $path = implode('/', array_slice(str_split(md5($model->id), 2), 0, 2));
+                return $baseUrl . $path;
+            },
+            'thumbs' => [
+                'thumb' => ['width' => 400, 'quality' => 90],
+                'preview' => ['width' => 200, 'height' => 200],
+                'news_thumb' => ['width' => 200, 'height' => 200, 'bg_color' => '000'],
+            ],
+        ],
+    ];
+}
+```
+
+#### II. Via array configuration by defining class and its static methods for path/URL generation
+
+```php
+/**
+ * @inheritdoc
+ */
+public function behaviors()
+{
+    return [
+        [
+            'class' => \mohorev\file\UploadImageBehavior::class,
+            'attribute' => 'image',
+            'scenarios' => ['insert', 'update'],
+            'placeholder' => '@app/modules/user/assets/images/userpic.jpg',
+            'path' => [UserProfile::class, 'buildAvatarPath'],
+            'url' => [UserProfile::class, 'buildAvatarUrl'],
+            'thumbs' => [
+                'thumb' => ['width' => 400, 'quality' => 90],
+                'preview' => ['width' => 200, 'height' => 200],
+                'news_thumb' => ['width' => 200, 'height' => 200, 'bg_color' => '000'],
+            ],
+        ],
+    ];
+}
+
+/**
+ * Define two static methos in your model for path and URL generation
+ */ 
+/**
+ * @param \app\models\UserProfile|\yii\db\ActiveRecord $profile
+ * @return string
+ */
+public static function buildAvatarPath(UserProfile $model)
+{
+    $basePath = '@webroot/upload/profiles/';
+    $path = implode('/', array_slice(str_split(md5($model->id), 2), 0, 2));
+
+    return $basePath . $path;
+}
+
+/**
+ * @param \app\models\UserProfile|\yii\db\ActiveRecord $profile
+ * @return string
+ */
+public static function buildAvatarUrl(UserProfile $model)
+{
+    $baseUrl = '@web/upload/profiles/';
+    $path = implode('/', array_slice(str_split(md5($model->id), 2), 0, 2));
+
+    return $baseUrl . $path;
+}
+```  
+
+### Usage in views
+
+Example:
 
 ```php
 <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
