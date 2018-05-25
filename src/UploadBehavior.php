@@ -311,8 +311,8 @@ class UploadBehavior extends Behavior
         } elseif (is_callable($path) || is_array($path)) {
             return call_user_func($path, $model);
         } else {
-            throw new InvalidConfigException(
-                '`path` property must be string or array or callable: ' . gettype($path) . ' given.'
+            throw new InvalidArgumentException(
+                '$path argument must be a string, array or callable: ' . gettype($path) . ' given.'
             );
         }
     }
