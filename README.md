@@ -17,13 +17,13 @@ The preferred way to install this extension via [composer](http://getcomposer.or
 Either run
 
 ```
-php composer.phar require --prefer-dist mohorev/yii2-upload-behavior "*"
+php composer.phar require --prefer-dist maxodrom/yii2-upload-behavior "*"
 ```
 
 or add this code line to the `require` section of your `composer.json` file:
 
 ```json
-"mohorev/yii2-upload-behavior": "*"
+"maxodrom/yii2-upload-behavior": "*"
 ```
 
 Usage
