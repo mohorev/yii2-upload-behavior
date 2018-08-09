@@ -64,7 +64,7 @@ class UploadImageBehavior extends UploadBehavior
      * Defaults to FALSE
      * @var boolean
      */
-    public $deleteSourceAfterThumbsGenerating = false;
+    public $deleteOriginalFile = false;
     /**
      * @var array the thumbnail profiles
      * - `width`
@@ -95,21 +95,23 @@ class UploadImageBehavior extends UploadBehavior
 
         parent::init();
 
-        if ($this->thumbPath === null) {
-            $this->thumbPath = $this->path;
-        }
-        if ($this->thumbUrl === null) {
-            $this->thumbUrl = $this->url;
-        }
+        if ($this->createThumbsOnSave || $this->createThumbsOnRequest) {
+            if ($this->thumbPath === null) {
+                $this->thumbPath = $this->path;
+            }
+            if ($this->thumbUrl === null) {
+                $this->thumbUrl = $this->url;
+            }
 
-        foreach ($this->thumbs as $config) {
-            $width = ArrayHelper::getValue($config, 'width');
-            $height = ArrayHelper::getValue($config, 'height');
-            if ($height < 1 && $width < 1) {
-                throw new InvalidConfigException(sprintf(
-                    'Length of either side of thumb cannot be 0 or negative, current size ' .
+            foreach ($this->thumbs as $config) {
+                $width = ArrayHelper::getValue($config, 'width');
+                $height = ArrayHelper::getValue($config, 'height');
+                if ($height < 1 && $width < 1) {
+                    throw new InvalidConfigException(sprintf(
+                        'Length of either side of thumb cannot be 0 or negative, current size ' .
                         'is %sx%s', $width, $height
-                ));
+                    ));
+                }
             }
         }
     }
@@ -149,7 +151,7 @@ class UploadImageBehavior extends UploadBehavior
             }
         }
         
-        if ($this->deleteSourceAfterThumbsGenerating) {
+        if ($this->deleteOriginalFile) {
             parent::delete($this->attribute);
         }
     }
