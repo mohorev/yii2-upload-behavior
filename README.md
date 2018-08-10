@@ -181,6 +181,7 @@ Behavior Options
 * generateNewName - Set true or anonymous function takes the old filename and returns a new name, default value is `true`
 * unlinkOnSave - If `true` current attribute file will be deleted, default value is `true`
 * unlinkOnDelete - If `true` current attribute file will be deleted after model deletion.
+* deleteOriginalFile - Only for UploadImageBehavior. If `true` original image file will be deleted after thumbs generating, default value is `false`.
 
 ### Attention!
 
