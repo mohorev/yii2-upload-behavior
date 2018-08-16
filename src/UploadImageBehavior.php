@@ -60,6 +60,12 @@ class UploadImageBehavior extends UploadBehavior
      */
     public $createThumbsOnRequest = false;
     /**
+     * Whether delete original uploaded image after thumbs generating.
+     * Defaults to FALSE
+     * @var boolean
+     */
+    public $deleteOriginalFile = false;
+    /**
      * @var array the thumbnail profiles
      * - `width`
      * - `height`
@@ -89,7 +95,7 @@ class UploadImageBehavior extends UploadBehavior
 
         parent::init();
 
-        if ($this->createThumbsOnSave) {
+        if ($this->createThumbsOnSave || $this->createThumbsOnRequest) {
             if ($this->thumbPath === null) {
                 $this->thumbPath = $this->path;
             }
@@ -128,6 +134,10 @@ class UploadImageBehavior extends UploadBehavior
     protected function createThumbs()
     {
         $path = $this->getUploadPath($this->attribute);
+        if (!is_file($path)) {
+            return;
+        }
+        
         foreach ($this->thumbs as $profile => $config) {
             $thumbPath = $this->getThumbUploadPath($this->attribute, $profile);
             if ($thumbPath !== null) {
@@ -140,6 +150,10 @@ class UploadImageBehavior extends UploadBehavior
                     $this->generateImageThumb($config, $path, $thumbPath);
                 }
             }
+        }
+        
+        if ($this->deleteOriginalFile) {
+            parent::delete($this->attribute);
         }
     }
 
@@ -157,7 +171,7 @@ class UploadImageBehavior extends UploadBehavior
         $path = $this->resolvePath($this->thumbPath);
         $attribute = ($old === true) ? $model->getOldAttribute($attribute) : $model->$attribute;
         $filename = $this->getThumbFileName($attribute, $profile);
-
+        
         return $filename ? Yii::getAlias($path . '/' . $filename) : null;
     }
 
@@ -172,11 +186,12 @@ class UploadImageBehavior extends UploadBehavior
     {
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
-        $path = $this->getUploadPath($attribute, true);
-        if (is_file($path)) {
-            if ($this->createThumbsOnRequest) {
-                $this->createThumbs();
-            }
+        
+        if ($this->createThumbsOnRequest) {
+            $this->createThumbs();
+        }
+        
+        if (is_file($this->getThumbUploadPath($attribute, $profile))) {
             $url = $this->resolvePath($this->thumbUrl);
             $fileName = $model->getOldAttribute($attribute);
             $thumbName = $this->getThumbFileName($fileName, $profile);
