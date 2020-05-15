@@ -87,7 +87,7 @@ class UploadBehavior extends Behavior
     /**
      * @var UploadedFile the uploaded file instance.
      */
-    private $_file;
+    protected $file;
 
 
     /**
@@ -132,17 +132,17 @@ class UploadBehavior extends Behavior
         $model = $this->owner;
         if (in_array($model->scenario, $this->scenarios)) {
             if (($file = $model->getAttribute($this->attribute)) instanceof UploadedFile) {
-                $this->_file = $file;
+                $this->file = $file;
             } else {
                 if ($this->instanceByName === true) {
-                    $this->_file = UploadedFile::getInstanceByName($this->attribute);
+                    $this->file = UploadedFile::getInstanceByName($this->attribute);
                 } else {
-                    $this->_file = UploadedFile::getInstance($model, $this->attribute);
+                    $this->file = UploadedFile::getInstance($model, $this->attribute);
                 }
             }
-            if ($this->_file instanceof UploadedFile) {
-                $this->_file->name = $this->getFileName($this->_file);
-                $model->setAttribute($this->attribute, $this->_file);
+            if ($this->file instanceof UploadedFile) {
+                $this->file->name = $this->getFileName($this->file);
+                $model->setAttribute($this->attribute, $this->file);
             }
         }
     }
@@ -155,13 +155,13 @@ class UploadBehavior extends Behavior
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
         if (in_array($model->scenario, $this->scenarios)) {
-            if ($this->_file instanceof UploadedFile) {
+            if ($this->file instanceof UploadedFile) {
                 if (!$model->getIsNewRecord() && $model->isAttributeChanged($this->attribute)) {
                     if ($this->unlinkOnSave === true) {
                         $this->delete($this->attribute, true);
                     }
                 }
-                $model->setAttribute($this->attribute, $this->_file->name);
+                $model->setAttribute($this->attribute, $this->file->name);
             } else {
                 // Protect attribute
                 unset($model->{$this->attribute});
@@ -181,10 +181,10 @@ class UploadBehavior extends Behavior
      */
     public function afterSave()
     {
-        if ($this->_file instanceof UploadedFile) {
+        if ($this->file instanceof UploadedFile) {
             $path = $this->getUploadPath($this->attribute);
             if (is_string($path) && FileHelper::createDirectory(dirname($path))) {
-                $this->save($this->_file, $path);
+                $this->save($this->file, $path);
                 $this->afterUpload();
             } else {
                 throw new InvalidArgumentException(
@@ -242,7 +242,7 @@ class UploadBehavior extends Behavior
      */
     protected function getUploadedFile()
     {
-        return $this->_file;
+        return $this->file;
     }
 
     /**
