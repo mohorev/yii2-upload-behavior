@@ -24,10 +24,10 @@ use yii\web\UploadedFile;
  * function behaviors()
  * {
  *     return [
- *         [
+ *         'upload' => [
  *             'class' => UploadBehavior::class,
  *             'attribute' => 'file',
- *             'scenarios' => ['insert', 'update'],
+ *             // 'scenarios' => ['insert', 'update'],
  *             'path' => '@webroot/upload/{id}',
  *             'url' => '@web/upload/{id}',
  *         ],
@@ -41,7 +41,8 @@ use yii\web\UploadedFile;
 class UploadBehavior extends Behavior
 {
     /**
-     * @event Event an event that is triggered after a file is uploaded.
+     * @event ModelEvent an event that is triggered after a file is uploaded.
+     * @var string
      */
     const EVENT_AFTER_UPLOAD = 'afterUpload';
 
@@ -50,9 +51,9 @@ class UploadBehavior extends Behavior
      */
     public $attribute;
     /**
-     * @var array the scenarios in which the behavior will be triggered
+     * @var string[] the scenarios in which the behavior will be triggered
      */
-    public $scenarios = [];
+    public $scenarios = [BaseActiveRecord::SCENARIO_DEFAULT];
     /**
      * @var string the base path or path alias to the directory in which to save files.
      */
@@ -66,24 +67,23 @@ class UploadBehavior extends Behavior
      */
     public $instanceByName = false;
     /**
-     * @var boolean|callable generate a new unique name for the file
+     * @var bool|callable generate a new unique name for the file
      * set true or anonymous function takes the old filename and returns a new name.
      * @see self::generateFileName()
      */
     public $generateNewName = true;
     /**
-     * @var boolean If `true` current attribute file will be deleted
+     * @var bool If `true` current attribute file will be deleted
      */
     public $unlinkOnSave = true;
     /**
-     * @var boolean If `true` current attribute file will be deleted after model deletion.
+     * @var bool If `true` current attribute file will be deleted after model deletion.
      */
     public $unlinkOnDelete = true;
     /**
-     * @var boolean $deleteTempFile whether to delete the temporary file after saving.
+     * @var bool $deleteTempFile whether to delete the temporary file after saving.
      */
     public $deleteTempFile = true;
-
     /**
      * @var UploadedFile the uploaded file instance.
      */
@@ -97,8 +97,14 @@ class UploadBehavior extends Behavior
     {
         parent::init();
 
+        if (!$this->owner instanceof BaseActiveRecord) {
+            throw new NotSupportedException('Owner must inherit \yii\db\BaseActiveRecord.');
+        }
         if ($this->attribute === null) {
             throw new InvalidConfigException('The "attribute" property must be set.');
+        }
+        if (!$this->owner->hasAttribute($this->attribute)) {
+            throw new InvalidConfigException('The attribute not defined in owner.');
         }
         if ($this->path === null) {
             throw new InvalidConfigException('The "path" property must be set.');
@@ -130,8 +136,9 @@ class UploadBehavior extends Behavior
     {
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
-        if (in_array($model->scenario, $this->scenarios)) {
-            if (($file = $model->getAttribute($this->attribute)) instanceof UploadedFile) {
+        if (\in_array($model->getScenario(), $this->scenarios, true)) {
+            $file = $model->getAttribute($this->attribute);
+            if ($file instanceof UploadedFile) {
                 $this->file = $file;
             } else {
                 if ($this->instanceByName === true) {
@@ -154,7 +161,7 @@ class UploadBehavior extends Behavior
     {
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
-        if (in_array($model->scenario, $this->scenarios)) {
+        if (\in_array($model->getScenario(), $this->scenarios, true)) {
             if ($this->file instanceof UploadedFile) {
                 if (!$model->getIsNewRecord() && $model->isAttributeChanged($this->attribute)) {
                     if ($this->unlinkOnSave === true) {
@@ -183,7 +190,7 @@ class UploadBehavior extends Behavior
     {
         if ($this->file instanceof UploadedFile) {
             $path = $this->getUploadPath($this->attribute);
-            if (is_string($path) && FileHelper::createDirectory(dirname($path))) {
+            if (\is_string($path) && FileHelper::createDirectory(\dirname($path))) {
                 $this->save($this->file, $path);
                 $this->afterUpload();
             } else {
@@ -199,26 +206,25 @@ class UploadBehavior extends Behavior
      */
     public function afterDelete()
     {
-        $attribute = $this->attribute;
-        if ($this->unlinkOnDelete && $attribute) {
-            $this->delete($attribute);
+        if ($this->unlinkOnDelete && $this->attribute) {
+            $this->delete($this->attribute);
         }
     }
 
     /**
      * Returns file path for the attribute.
      * @param string $attribute
-     * @param boolean $old
+     * @param bool $old
      * @return string|null the file path.
      */
     public function getUploadPath($attribute, $old = false)
     {
+        $path = $this->resolvePath($this->path);
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
-        $path = $this->resolvePath($this->path);
-        $fileName = ($old === true) ? $model->getOldAttribute($attribute) : $model->$attribute;
+        $fileName = $old === true ? $model->getOldAttribute($attribute) : $model->getAttribute($attribute);
 
-        return $fileName ? Yii::getAlias($path . '/' . $fileName) : null;
+        return $fileName ? Yii::getAlias($path . DIRECTORY_SEPARATOR . $fileName) : null;
     }
 
     /**
@@ -228,9 +234,9 @@ class UploadBehavior extends Behavior
      */
     public function getUploadUrl($attribute)
     {
+        $url = $this->resolvePath($this->url);
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
-        $url = $this->resolvePath($this->url);
         $fileName = $model->getOldAttribute($attribute);
 
         return $fileName ? Yii::getAlias($url . '/' . $fileName) : null;
@@ -247,27 +253,31 @@ class UploadBehavior extends Behavior
 
     /**
      * Replaces all placeholders in path variable with corresponding values.
+     * @param string $path
+     * @return string
      */
     protected function resolvePath($path)
     {
-        /** @var BaseActiveRecord $model */
-        $model = $this->owner;
-        return preg_replace_callback('/{([^}]+)}/', function ($matches) use ($model) {
-            $name = $matches[1];
-            $attribute = ArrayHelper::getValue($model, $name);
-            if (is_string($attribute) || is_numeric($attribute)) {
-                return $attribute;
-            } else {
+        return \preg_replace_callback(
+            '/\{([^}]+)\}/',
+            function ($matches) {
+                /** @var BaseActiveRecord $model */
+                $model = $this->owner;
+                $attribute = $model->getAttribute($matches[1]);
+                if (\is_string($attribute) || \is_numeric($attribute)) {
+                    return $attribute;
+                }
                 return $matches[0];
-            }
-        }, $path);
+            }, 
+            $path
+        );
     }
 
     /**
      * Saves the uploaded file.
      * @param UploadedFile $file the uploaded file instance
      * @param string $path the file path used to save the uploaded file
-     * @return boolean true whether the file is saved successfully
+     * @return bool true whether the file is saved successfully
      */
     protected function save($file, $path)
     {
@@ -277,13 +287,13 @@ class UploadBehavior extends Behavior
     /**
      * Deletes old file.
      * @param string $attribute
-     * @param boolean $old
+     * @param bool $old
      */
     protected function delete($attribute, $old = false)
     {
         $path = $this->getUploadPath($attribute, $old);
-        if (is_file($path)) {
-            unlink($path);
+        if (\is_file($path)) {
+            \unlink($path);
         }
     }
 
@@ -291,28 +301,24 @@ class UploadBehavior extends Behavior
      * @param UploadedFile $file
      * @return string
      */
-    protected function getFileName($file)
+    protected function getFileName(UploadedFile $file)
     {
         if ($this->generateNewName) {
             return $this->generateNewName instanceof Closure
-                ? call_user_func($this->generateNewName, $file)
+                ? \call_user_func($this->generateNewName, $file)
                 : $this->generateFileName($file);
-        } else {
-            return $this->sanitize($file->name);
         }
+        return $this->sanitizeFileName($file->name);
     }
 
     /**
      * Replaces characters in strings that are illegal/unsafe for filename.
-     *
-     * #my*  unsaf<e>&file:name?".png
-     *
      * @param string $filename the source filename to be "sanitized"
-     * @return boolean string the sanitized filename
+     * @return string string the sanitized filename
      */
-    public static function sanitize($filename)
+    protected static function sanitizeFileName($filename)
     {
-        return str_replace([' ', '"', '\'', '&', '/', '\\', '?', '#'], '-', $filename);
+        return \preg_replace('/[^-.\w]+/i', '', $filename);
     }
 
     /**
@@ -320,9 +326,9 @@ class UploadBehavior extends Behavior
      * @param UploadedFile $file
      * @return string
      */
-    protected function generateFileName($file)
+    protected function generateFileName(UploadedFile $file)
     {
-        return uniqid() . '.' . $file->extension;
+        return \str_replace('.', '', \uniqid('', true)) . '.' . $file->extension;
     }
 
     /**
@@ -333,6 +339,6 @@ class UploadBehavior extends Behavior
      */
     protected function afterUpload()
     {
-        $this->owner->trigger(self::EVENT_AFTER_UPLOAD);
+        $this->owner->trigger(self::EVENT_AFTER_UPLOAD, new ModelEvent());
     }
 }
