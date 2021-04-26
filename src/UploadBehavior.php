@@ -48,6 +48,10 @@ class UploadBehavior extends Behavior
     const EVENT_AFTER_UPLOAD = 'afterUpload';
 
     /**
+     * @var BaseActiveRecord Model
+     */
+    public $owner;
+    /**
      * @var string the attribute which holds the attachment.
      */
     public $attribute;
@@ -137,7 +141,7 @@ class UploadBehavior extends Behavior
     {
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
-        if (\in_array($model->getScenario(), $this->scenarios, true)) {
+        if (empty($this->scenarios) || \in_array($model->getScenario(), $this->scenarios, true)) {
             $file = $model->getAttribute($this->attribute);
             if ($file instanceof UploadedFile) {
                 $this->file = $file;
@@ -162,7 +166,7 @@ class UploadBehavior extends Behavior
     {
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
-        if (\in_array($model->getScenario(), $this->scenarios, true)) {
+        if (empty($this->scenarios) || \in_array($model->getScenario(), $this->scenarios, true)) {
             if ($this->file instanceof UploadedFile) {
                 if (!$model->getIsNewRecord() && $model->isAttributeChanged($this->attribute)) {
                     if ($this->unlinkOnSave === true) {
