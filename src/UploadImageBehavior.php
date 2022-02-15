@@ -136,7 +136,7 @@ class UploadImageBehavior extends UploadBehavior
         if (!is_file($path)) {
             return;
         }
-        
+
         foreach ($this->thumbs as $profile => $config) {
             $thumbPath = $this->getThumbUploadPath($this->attribute, $profile);
             if ($thumbPath !== null) {
@@ -150,7 +150,7 @@ class UploadImageBehavior extends UploadBehavior
                 }
             }
         }
-        
+
         if ($this->deleteOriginalFile) {
             parent::delete($this->attribute);
         }
@@ -169,7 +169,7 @@ class UploadImageBehavior extends UploadBehavior
         $path = $this->resolvePath($this->thumbPath);
         $attribute = ($old === true) ? $model->getOldAttribute($attribute) : $model->$attribute;
         $filename = $this->getThumbFileName($attribute, $profile);
-        
+
         return $filename ? Yii::getAlias($path . '/' . $filename) : null;
     }
 
@@ -182,11 +182,11 @@ class UploadImageBehavior extends UploadBehavior
     {
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
-        
+
         if ($this->createThumbsOnRequest) {
             $this->createThumbs();
         }
-        
+
         if (is_file($this->getThumbUploadPath($attribute, $profile))) {
             $url = $this->resolvePath($this->thumbUrl);
             $fileName = $model->getOldAttribute($attribute);
@@ -257,6 +257,7 @@ class UploadImageBehavior extends UploadBehavior
         $quality = ArrayHelper::getValue($config, 'quality', 100);
         $mode = ArrayHelper::getValue($config, 'mode', ManipulatorInterface::THUMBNAIL_INSET);
         $bg_color = ArrayHelper::getValue($config, 'bg_color', 'FFF');
+        $bg_alpha = ArrayHelper::getValue($config, 'bg_alpha', 100);
 
         if (!$width || !$height) {
             $image = Image::getImagine()->open($path);
@@ -271,6 +272,7 @@ class UploadImageBehavior extends UploadBehavior
         // Fix error "PHP GD Allowed memory size exhausted".
         ini_set('memory_limit', '512M');
         Image::$thumbnailBackgroundColor = $bg_color;
+        Image::$thumbnailBackgroundAlpha = $bg_alpha;
         Image::thumbnail($path, $width, $height, $mode)->save($thumbPath, ['quality' => $quality]);
     }
 }
