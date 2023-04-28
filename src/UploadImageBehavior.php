@@ -130,7 +130,7 @@ class UploadImageBehavior extends UploadBehavior
     /**
      * @throws \yii\base\InvalidArgumentException
      */
-    protected function createThumbs()
+    public function createThumbs()
     {
         $path = $this->getUploadPath($this->attribute);
         if (!is_file($path)) {
