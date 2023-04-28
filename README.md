@@ -136,6 +136,7 @@ class User extends ActiveRecord
                     'thumb' => ['width' => 400, 'quality' => 90],
                     'preview' => ['width' => 200, 'height' => 200],
                     'news_thumb' => ['width' => 200, 'height' => 200, 'bg_color' => '000'],
+                    'webp_thumb' => ['width' => 200, 'height' => 200, 'extension' => 'webp'],
                 ],
             ],
         ];

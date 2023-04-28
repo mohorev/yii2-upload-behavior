@@ -26,9 +26,10 @@
         "yiisoft/yii2": "~2.0.0"
     },
     "require-dev": {
-      "phpunit/phpunit": "~4.0",
-      "phpunit/dbunit": "~1.0",
-      "yiisoft/yii2-imagine": "^2.1"
+        "phpunit/phpunit": "~4.0",
+        "phpunit/dbunit": "~1.0",
+        "yiisoft/yii2-imagine": "^2.1",
+        "ext-sqlite3": "*"
     },
     "suggest": {
         "yiisoft/yii2-imagine": "Required to use thumbnails processing with UploadImageBehavior"
@@ -36,6 +37,11 @@
     "autoload": {
         "psr-4": {
             "mohorev\\file\\": "src"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
         }
     }
 }
