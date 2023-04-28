@@ -103,9 +103,6 @@ class UploadBehavior extends Behavior
         if ($this->path === null) {
             throw new InvalidConfigException('The "path" property must be set.');
         }
-        if ($this->url === null) {
-            throw new InvalidConfigException('The "url" property must be set.');
-        }
     }
 
     /**
@@ -228,6 +225,10 @@ class UploadBehavior extends Behavior
      */
     public function getUploadUrl($attribute)
     {
+        if ($this->url === null) {
+            return null;
+        }
+
         /** @var BaseActiveRecord $model */
         $model = $this->owner;
         $url = $this->resolvePath($this->url);
