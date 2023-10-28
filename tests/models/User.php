@@ -43,6 +43,7 @@ class User extends ActiveRecord
                 'thumbs' => [
                     'thumb' => ['width' => 400, 'quality' => 90],
                     'preview' => ['width' => 200, 'height' => 200],
+                    'thumb-gif' => ['width' => 400, 'extension' => 'gif']
                 ],
             ],
         ];

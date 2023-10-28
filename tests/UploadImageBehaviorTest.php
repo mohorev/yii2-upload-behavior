@@ -60,6 +60,22 @@ class UploadImageBehaviorTest extends DatabaseTestCase
         $this->assertEquals(200, $previewInfo[1]);
     }
 
+    public function testResizeUserAndChangeExtension()
+    {
+        $user = User::findOne(1);
+        $user->setScenario('update');
+
+        $this->assertTrue($user->save());
+
+        $thumbPath = $user->getThumbUploadPath('image', 'thumb-gif');
+
+        $thumbInfo = getimagesize($thumbPath);
+        $this->assertEquals(400, $thumbInfo[0]);
+        $this->assertEquals(300, $thumbInfo[1]);
+
+        $this->assertStringEndsWith('.gif', $thumbPath);
+    }
+
     /**
      * @inheritdoc
      */

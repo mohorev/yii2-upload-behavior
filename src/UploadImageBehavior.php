@@ -130,7 +130,7 @@ class UploadImageBehavior extends UploadBehavior
     /**
      * @throws \yii\base\InvalidArgumentException
      */
-    protected function createThumbs()
+    public function createThumbs()
     {
         $path = $this->getUploadPath($this->attribute);
         if (!is_file($path)) {
@@ -242,6 +242,13 @@ class UploadImageBehavior extends UploadBehavior
      */
     protected function getThumbFileName($filename, $profile = 'thumb')
     {
+        $config = $this->thumbs[$profile];
+
+        if (isset($config['extension'])) {
+            $filename = pathinfo($filename, PATHINFO_FILENAME);
+            $filename .= '.' . $config['extension'];
+        }
+
         return $profile . '-' . $filename;
     }
 
@@ -273,6 +280,13 @@ class UploadImageBehavior extends UploadBehavior
         ini_set('memory_limit', '512M');
         Image::$thumbnailBackgroundColor = $bg_color;
         Image::$thumbnailBackgroundAlpha = $bg_alpha;
+
+        Yii::info([
+            'message' => 'Generating image',
+            'path' => $thumbPath,
+            'quality' => $quality
+        ]);
+
         Image::thumbnail($path, $width, $height, $mode)->save($thumbPath, ['quality' => $quality]);
     }
 }
