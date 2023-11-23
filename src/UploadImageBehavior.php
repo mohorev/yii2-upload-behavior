@@ -128,7 +128,8 @@ class UploadImageBehavior extends UploadBehavior
     }
 
     /**
-     * @throws \yii\base\InvalidArgumentException
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
      */
     protected function createThumbs()
     {
@@ -161,6 +162,7 @@ class UploadImageBehavior extends UploadBehavior
      * @param string $profile
      * @param boolean $old
      * @return string
+     * @throws \yii\base\InvalidConfigException
      */
     public function getThumbUploadPath($attribute, $profile = 'thumb', $old = false)
     {
@@ -177,6 +179,8 @@ class UploadImageBehavior extends UploadBehavior
      * @param string $attribute
      * @param string $profile
      * @return string|null
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
      */
     public function getThumbUploadUrl($attribute, $profile = 'thumb')
     {
